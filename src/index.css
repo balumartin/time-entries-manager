@@ -2,13 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    font-family: Arial, Helvetica, sans-serif;
-    box-sizing: border-box;
+:root {
+  --background: #1e293b;
+  --foreground: #f8fafc;
+}
+
+/* @custom-variant dark (&:where(.dark, .dark *)); */
+
+html,
+body {
+  max-width: 100vw;
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+} */
+
+@layer utilities {
+  .mx-container {
+    @apply mx-auto max-w-[1200px];
   }
 
-  body {
-    background-color: rgb(71 85 105);
+  .p-container {
+    @apply lg:p-6 xl:p-20 2xl:p-6;
+  }
+
+  .b-container {
+    @apply border border-slate-300 rounded;
+  }
+
+  .flexCenter {
+    @apply flex items-center justify-center;
+  }
+
+  .flexBetween {
+    @apply flex items-center justify-between;
+  }
+
+  .flexStart {
+    @apply flex items-center justify-start;
+  }
+
+  .flexEnd {
+    @apply flex items-center justify-end;
+  }
+
+  .bold-30 {
+    @apply text-3xl font-bold mb-8;
   }
 }

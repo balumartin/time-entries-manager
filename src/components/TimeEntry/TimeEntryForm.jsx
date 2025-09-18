@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { calculateDifferenceTime } from "../calculateDifferenceTime";
+import { calculateDifferenceTime } from "../../utils/calculateDifferenceTime";
 import { format } from "date-fns";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { FaRegSquarePlus } from "react-icons/fa6";
 
 const initialValues = {
@@ -20,15 +20,19 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
     e.preventDefault();
     const { name, description, startTime, endTime, workDay, tags } = formData;
     if (!name || !description || !workDay) {
-      toast.error("Please fill in all fields.");
+      toast.error("Please fill in all fields.", {
+        style: {
+          borderRadius: "10px",
+          background: "#94a3b8",
+          color: "#fff",
+        },
+      });
       return;
     }
 
-    const trimmedTags = tags.map((tag) => tag.trim());
     const timeDuration = calculateDifferenceTime(startTime, endTime);
     const updatedFormData = {
       ...formData,
-      tags: trimmedTags,
       time: timeDuration,
     };
 
@@ -46,13 +50,10 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
   }, [newValues]);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-[1000px] mx-auto rounded-lg my-2 p-2"
-    >
-      <Toaster />
+    <form onSubmit={handleSubmit} className="max-w-[1400px] rounded-sm-lg p-2">
+      <h2 className="text-xl text-slate-200 text-start my-4">Add new entry</h2>
       <div className="flex justify-between flex-wrap items-end mx-auto ">
-        <div>
+        <div className="">
           <label
             htmlFor="name"
             className="block  text-sm font-medium text-slate-100"
@@ -67,7 +68,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
               placeholder="Name"
               value={formData.name}
               id="name"
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block p-1 "
+              className=" autofill:bg-yellow-200 bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 text-sm rounded-sm after:bg-slate-400 block p-1 "
             />
           </label>
         </div>
@@ -86,7 +87,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
               placeholder="Description"
               value={formData.description}
               id="description"
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block p-1 "
+              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded-sm after:bg-slate-400 block p-1 "
             />
           </label>
         </div>
@@ -104,7 +105,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
               name="startTime"
               value={formData.startTime}
               id="startTime"
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block p-1 "
+              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded-sm after:bg-slate-400 block p-1 "
             />
           </label>
         </div>
@@ -122,7 +123,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
               name="endTime"
               id="endTime"
               value={formData.endTime}
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block p-1 "
+              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded-sm after:bg-slate-400 block p-1 "
             />
           </label>
         </div>
@@ -140,7 +141,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
               name="workDay"
               id="workDay"
               value={formData.workDay}
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block p-1 "
+              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded-sm after:bg-slate-400 block p-1 "
             />
           </label>
         </div>
@@ -148,21 +149,30 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
         <div className="">
           <label
             htmlFor="tags"
-            className="block  text-sm font-medium text-slate-100"
+            className="block text-sm font-medium text-slate-100"
           >
             Tags:
-            <input
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value.split(",") })
-              }
-              type="text"
+            <select
+              id="tag-select"
               name="tags"
-              id="tags"
               value={formData.tags}
-              placeholder="work,meeting,etc..."
-              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 border-slate-400 text-slate-50 appearance-none text-sm rounded after:bg-slate-400 block w-full p-1 "
-              autoComplete="off"
-            />
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  tags: e.target.value,
+                })
+              }
+              className="bg-slate-500 outline-none active:ring-slate-300 focus:ring-1 focus:ring-slate-300 
+                 border-slate-400 text-slate-50 text-sm rounded-sm block w-full p-1"
+            >
+              <option value="">--Please choose an option--</option>
+              <option value="work">Work</option>
+              <option value="meeting">Meeting</option>
+              <option value="learning">Learning</option>
+              <option value="break">Break</option>
+              <option value="research">Research</option>
+              <option value="urgent">Urgent</option>
+            </select>
           </label>
         </div>
         {newValues ? (

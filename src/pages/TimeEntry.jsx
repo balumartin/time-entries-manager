@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import TimeEntryForm from "./components/TimeEntryForm.jsx";
-import timeClockIcon from "./assets/time-clock.svg";
-import TimeEntryList from "./components/TimeEntryList.jsx";
-import toast, { Toaster } from "react-hot-toast";
+import TimeEntryForm from "../components/TimeEntry/TimeEntryForm.jsx";
+import TimeEntryList from "../components/TimeEntry/TimeEntryList.jsx";
+import toast from "react-hot-toast";
 
-function App() {
+function TimeEntry() {
   const [entries, setEntries] = useState(() => {
     const localValue = localStorage.getItem("timeEntries");
     if (localValue == null) return [];
@@ -15,7 +14,7 @@ function App() {
     } catch (err) {
       console.error(
         "An error occurred while parsing the localStorage data:",
-        err
+        err,
       );
       return [];
     }
@@ -33,13 +32,25 @@ function App() {
           currentEntries.map((entry) =>
             entry.id === editingEntry.id ? { ...entry, ...data } : entry
           ),
-        toast.success("Successfully saved!")
+        toast.success("Successfully saved!", {
+        style: {
+          borderRadius: "10px",
+          background: "#94a3b8",
+          color: "#fff",
+        },
+      })
       );
       setEditingEntry(null);
     } else {
       setEntries(
         (currentEntries) => [...currentEntries, { id: uuidv4(), ...data }],
-        toast.success("Successfully added!")
+        toast.success("Successfully added!"), {
+        style: {
+          borderRadius: "10px",
+          background: "#94a3b8",
+          color: "#fff",
+        },
+      }
       );
     }
   };
@@ -48,7 +59,13 @@ function App() {
     setEntries((currentEntries) => {
       return currentEntries.filter((entry) => entry.id !== id);
     });
-    toast.success("Successfully deleted");
+    toast.success("Successfully deleted"), {
+        style: {
+          borderRadius: "10px",
+          background: "#94a3b8",
+          color: "#fff",
+        },
+      };
   };
 
   useEffect(() => {
@@ -56,22 +73,15 @@ function App() {
   }, [entries]);
 
   return (
-    <>
-      <Toaster />
-      <div className="w-full p-1 my-5 bg-slate-600">
-        <div className="flex items-center">
-          <img className="h-[2rem] mx-2" src={timeClockIcon} alt="time-clock" />
-          <span className="text-2xl text-slate-100">Time Entries Manager</span>
-        </div>
-      </div>
+    <main className="px-5">
       <TimeEntryForm onSubmit={createTimeEntry} newValues={editingEntry} />
       <TimeEntryList
         entries={entries}
         editTimeEntry={editTimeEntry}
         deleteTimeEntry={deleteTimeEntry}
       />
-    </>
+    </main>
   );
 }
 
-export default App;
+export default TimeEntry;
