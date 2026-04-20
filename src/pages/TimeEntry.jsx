@@ -1,87 +1,31 @@
-import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import TimeEntryForm from "../components/TimeEntry/TimeEntryForm.jsx";
-import TimeEntryList from "../components/TimeEntry/TimeEntryList.jsx";
+import TimeEntryForm from "../components/TimeEntry/TimeEntryForm";
+import TimeEntryList from "../components/TimeEntry/TimeEntryList";
+import { useTimeEntries } from "../context/TimeEntriesContext";
 import toast from "react-hot-toast";
 
-function TimeEntry() {
-  const [entries, setEntries] = useState(() => {
-    const localValue = localStorage.getItem("timeEntries");
-    if (localValue == null) return [];
+export default function TimeEntry() {
+  const { entries, editingEntry, addOrUpdateEntry, deleteEntry, startEdit } =
+    useTimeEntries();
 
-    try {
-      return JSON.parse(localValue);
-    } catch (err) {
-      console.error(
-        "An error occurred while parsing the localStorage data:",
-        err,
-      );
-      return [];
-    }
-  });
-  const [editingEntry, setEditingEntry] = useState(null);
+  function handleSubmit(data) {
+    addOrUpdateEntry(data);
 
-  const editTimeEntry = (entryToEdit) => {
-    setEditingEntry(entryToEdit);
-  };
+    toast.success(editingEntry ? "Saved!" : "Added!");
+  }
 
-  const createTimeEntry = (data) => {
-    if (editingEntry) {
-      setEntries(
-        (currentEntries) =>
-          currentEntries.map((entry) =>
-            entry.id === editingEntry.id ? { ...entry, ...data } : entry
-          ),
-        toast.success("Successfully saved!", {
-        style: {
-          borderRadius: "10px",
-          background: "#94a3b8",
-          color: "#fff",
-        },
-      })
-      );
-      setEditingEntry(null);
-    } else {
-      setEntries(
-        (currentEntries) => [...currentEntries, { id: uuidv4(), ...data }],
-        toast.success("Successfully added!"), {
-        style: {
-          borderRadius: "10px",
-          background: "#94a3b8",
-          color: "#fff",
-        },
-      }
-      );
-    }
-  };
-
-  const deleteTimeEntry = (id) => {
-    setEntries((currentEntries) => {
-      return currentEntries.filter((entry) => entry.id !== id);
-    });
-    toast.success("Successfully deleted"), {
-        style: {
-          borderRadius: "10px",
-          background: "#94a3b8",
-          color: "#fff",
-        },
-      };
-  };
-
-  useEffect(() => {
-    localStorage.setItem("timeEntries", JSON.stringify(entries));
-  }, [entries]);
+  function handleDelete(id) {
+    deleteEntry(id);
+    toast.success("Deleted!");
+  }
 
   return (
     <main className="px-5">
-      <TimeEntryForm onSubmit={createTimeEntry} newValues={editingEntry} />
+      <TimeEntryForm onSubmit={handleSubmit} newValues={editingEntry} />
       <TimeEntryList
         entries={entries}
-        editTimeEntry={editTimeEntry}
-        deleteTimeEntry={deleteTimeEntry}
+        editTimeEntry={startEdit}
+        deleteTimeEntry={handleDelete}
       />
     </main>
   );
 }
-
-export default TimeEntry;
