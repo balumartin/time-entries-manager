@@ -6,9 +6,9 @@ import Footer from "../components/Footer.jsx";
 
 export default function MainLayout() {
   return (
-    <div className="flex flex-col items-start justify-start w-full h-screen">
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="flex h-full w-full">
+      <div className="flex flex-1 w-full">
         <Sidebar />
         <main className="flex-1">
           <Outlet />
