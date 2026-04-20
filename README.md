@@ -1,17 +1,39 @@
 # Time Entries Manager
 
-A **Time Entries Manager** egy egyszerű React-alapú alkalmazás, amely lehetővé teszi a felhasználók számára, hogy nyomon követhessék munkaidejüket. Az alkalmazás segítségével a felhasználók létrehozhatják, szerkeszthetik és törölhetik munkaidő bejegyzéseiket, valamint címkézhetik azokat különböző kategóriák szerint.
+Egy egyszerű time tracking app Reacttel.
 
-## Fő Funkciók
-- **Munkaidő bejegyzés létrehozása:** 
-- **Munkaidő bejegyzés szerkesztése:** 
-- **Munkaidő bejegyzés törlése:** 
-- **Munkaidő bejegyzések listázása:** 
+Lehet benne:
+- új bejegyzést felvenni
+- szerkeszteni
+- törölni
+- napi bontásban összesítést nézni (charttal)
 
-## Technológiai Követelmények
-- **Frontend Framework:** React (Vite)
-- **CSS Keretrendszer:** Tailwind CSS
-- **Dátumkezelés:** `date-fns` könyvtár
-- **Egyedi azonosítók:** `uuid` könyvtár
-- **Ikonok:** `react-icons` könyvtár
-- **Adatkezelés:** LocalStorage
+Az adatok localStorage-ben tárolódnak, így frissítés után is megmaradnak.
+
+---
+
+## Tech
+
+- React
+- React Router
+- Context API
+- Tailwind CSS
+- Chart.js
+- date-fns
+
+---
+
+## Mire készült
+
+Gyakorlásra, főleg ezekre:
+- Context használat
+- adatfolyam átlátása
+- komponensek szétbontása
+- alap UI + logika különválasztása
+
+---
+
+## Megjegyzés
+
+Ez egy tanuló projekt, még nincs backend, auth stb.  
+A weekly summary még nincs teljesen kész.
