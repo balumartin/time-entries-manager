@@ -8,20 +8,14 @@ export default function TimeEntryList({
 }) {
   return (
     <div className="flex flex-col mx-auto my-5 border border-slate-500 rounded-sm overflow-hidden">
-      {entries?.length === 0 && (
+      {entries?.length === 0 ? (
         <h2 className="text-xl text-slate-300 font-semibold flex items-center justify-center">
           No entries available
         </h2>
-      )}
-      {entries?.length > 0 && (
-        <table className="">
-          <thead className="space-y-4">
-            <tr className="bg-slate-500">
-              <th colSpan={8} className="text-start font-medium text-slate-300 p-2">
-                Entries
-              </th>
-            </tr>
-            <tr className="">
+      ) : (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="w-full bg-slate-700">
               <th className="py-2 px-4 text-start font-medium font-mono text-xs text-slate-400">
                 Name
               </th>
@@ -32,10 +26,10 @@ export default function TimeEntryList({
                 Workday
               </th>
               <th className="py-2 px-4 text-start font-medium font-mono text-xs text-slate-400">
-                Start Time
+                Start
               </th>
               <th className="py-2 px-4 text-start font-medium font-mono text-xs text-slate-400">
-                End Time
+                End
               </th>
               <th className="py-2 px-4 text-start font-medium font-mono text-xs text-slate-400">
                 Duration
@@ -47,10 +41,10 @@ export default function TimeEntryList({
             </tr>
           </thead>
           <tbody>
-            {entries?.map((entry) => (
+            {entries.map((entry) => (
               <TimeEntryItem
                 key={entry.id}
-                {...entry}
+                entry={entry}
                 deleteTimeEntry={deleteTimeEntry}
                 editTimeEntry={editTimeEntry}
               />

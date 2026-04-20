@@ -10,7 +10,7 @@ const initialValues = {
   startTime: "09:00",
   endTime: "17:00",
   workDay: format(new Date(), "yyyy-MM-dd"),
-  tags: [],
+  tags: "",
 };
 
 export default function TimeEntryForm({ onSubmit, newValues = null }) {
@@ -19,6 +19,15 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
   function handleSubmit(e) {
     e.preventDefault();
     const { name, description, startTime, endTime, workDay, tags } = formData;
+    if (!startTime || !endTime) {
+      toast.error("Time is required");
+      return;
+    }
+
+    if (endTime <= startTime) {
+      toast.error("End time must be after start time");
+      return;
+    }
     if (!name || !description || !workDay) {
       toast.error("Please fill in all fields.", {
         style: {
@@ -35,22 +44,16 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
       ...formData,
       time: timeDuration,
     };
-
     onSubmit(updatedFormData);
-
     setFormData(initialValues);
   }
 
   useEffect(() => {
-    if (newValues) {
-      setFormData(newValues);
-    } else {
-      setFormData(initialValues);
-    }
+    if (newValues) setFormData(newValues);
   }, [newValues]);
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-[1400px] rounded-sm-lg p-2">
+    <form onSubmit={handleSubmit} className="max-w-[1400px] rounded-sm p-2">
       <h2 className="text-xl text-slate-200 text-start my-4">Add new entry</h2>
       <div className="flex justify-between flex-wrap items-end mx-auto ">
         <div className="">
@@ -155,7 +158,7 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
             <select
               id="tag-select"
               name="tags"
-              value={formData.tags}
+              value={formData.tags || ""}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -176,11 +179,11 @@ export default function TimeEntryForm({ onSubmit, newValues = null }) {
           </label>
         </div>
         {newValues ? (
-          <button className="bg-yellow-500 text-white h-auto p-2 rounded-xl">
+          <button type="submit" className="bg-yellow-500 text-white h-auto p-2 rounded-xl">
             Save
           </button>
         ) : (
-          <button className="bg-blue-500 text-white p-2 rounded-xl">
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded-xl">
             <FaRegSquarePlus />
           </button>
         )}
