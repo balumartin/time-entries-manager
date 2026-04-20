@@ -1,4 +1,3 @@
-import React from "react";
 import { format, isSameDay } from "date-fns";
 import { Chart as ChartJS, ArcElement, Legend, Tooltip } from "chart.js";
 import { Pie } from "react-chartjs-2";
@@ -6,40 +5,36 @@ import { Pie } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function DailySummary({ entries, selectedDate }) {
+  const selected = new Date(selectedDate);
+
   const dailyEntries = entries.filter((entry) =>
-    isSameDay(new Date(entry.workDay), new Date(selectedDate))
+    isSameDay(new Date(entry.workDay), selected),
   );
 
-  console.log(entries);
+  function parseTimeToMinutes(time) {
+    const [h, m] = time.trim().split(":").map(Number);
+    return h * 60 + m;
+  }
 
-  const totalMinutes = dailyEntries.reduce((total, entry) => {
-    const [hours, minutes] = entry.time.split(":").map(Number);
-    return total + hours * 60 + minutes;
-  }, 0);
+  const totalMinutes = dailyEntries.reduce(
+    (sum, entry) => sum + parseTimeToMinutes(entry.time),
+    0,
+  );
 
   const totalHours = Math.floor(totalMinutes / 60);
   const remainingMinutes = totalMinutes % 60;
 
   const nameTotals = dailyEntries.reduce((acc, entry) => {
-    const [hours, minutes] = entry.time.trim().split(":").map(Number);
-    const totalMinutes = hours * 60 + minutes;
-
-    if (!acc[entry.name]) {
-      acc[entry.name] = totalMinutes;
-    } else {
-      acc[entry.name] += totalMinutes;
-    }
-    console.log("acc: ", acc)
+    const mins = parseTimeToMinutes(entry.time);
+    acc[entry.name] = (acc[entry.name] || 0) + mins;
     return acc;
   }, {});
-
-  console.log("nameTotals: ", nameTotals)
 
   const chartData = {
     labels: Object.keys(nameTotals),
     datasets: [
       {
-        label: "Munkaidő személyek szerint",
+        label: "Time by person",
         data: Object.values(nameTotals),
         backgroundColor: [
           "#4CAF50",
@@ -58,7 +53,7 @@ export default function DailySummary({ entries, selectedDate }) {
   if (dailyEntries.length === 0) {
     return (
       <div className="bg-slate-700 text-slate-300 p-4 mt-5 flex flex-col w-max border border-slate-300 rounded-md">
-        <p>Nincs adat a kiválasztott napra.</p>
+        <p>No data for the selected day.</p>
       </div>
     );
   }
@@ -67,15 +62,15 @@ export default function DailySummary({ entries, selectedDate }) {
     <div className="bg-slate-700 text-slate-300 p-4 mt-5 flex flex-col w-max border border-slate-300 rounded-md">
       <h2 className="text-lg font-semibold">Napi összesítő</h2>
       <p>
-        Kiválasztott nap:{" "}
+        Selected day:{" "}
         <span className="font-bold">
           {format(new Date(selectedDate), "yyyy-MM-dd")}
         </span>
       </p>
       <p>
-        Összesített idő:{" "}
+       Total time:{" "}
         <span className="font-bold">
-          {totalHours} óra {remainingMinutes} perc
+          {totalHours} hours {remainingMinutes} mins
         </span>
       </p>
       <div className="mt-4">
