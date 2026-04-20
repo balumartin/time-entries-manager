@@ -1,16 +1,19 @@
-import { differenceInMinutes, parse } from "date-fns";
+import { differenceInMinutes, parse, addDays } from "date-fns";
 
 export const calculateDifferenceTime = (start, end) => {
-  const startTime = parse(start, "HH:mm", new Date());
-  const endTime = parse(end, "HH:mm", new Date());
+  const baseDate = new Date();
 
-  const differenceInMins = differenceInMinutes(endTime, startTime);
-  const hours = Math.floor(differenceInMins / 60)
-    .toString()
-    .padStart(2, "0");
-  const minutes = (differenceInMins % 60).toString().padStart(2, "0");
+  let startTime = parse(start, "HH:mm", baseDate);
+  let endTime = parse(end, "HH:mm", baseDate);
 
-  const result = `${hours}:${minutes} `;
+  if (endTime <= startTime) {
+    endTime = addDays(endTime, 1);
+  }
 
-  return result;
+  const diff = differenceInMinutes(endTime, startTime);
+
+  const hours = String(Math.floor(diff / 60)).padStart(2, "0");
+  const minutes = String(diff % 60).padStart(2, "0");
+
+  return `${hours}:${minutes}`;
 };
